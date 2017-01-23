@@ -1,15 +1,23 @@
-
+version: '2'
 #
 # Optional Volumes:
 #  - /opt/phabricator/conf - configuration
 #  - /var/repo - code repos
+#  - /var/log - system logs
 #
 #
-phabricator:
+services:
+  phabricator:
     build: .
-    links: ['database']
-    ports: ['8081:80']
-
-
-database:
+    links:
+      - database
+    ports:
+      - '127.0.0.1:8081:80'
+    volumes:
+      - ./data/conf:/opt/phabricator/conf
+      - ./data/repo:/var/repo
+      - ./data/log:/var/log
+    restart: always
+  database:
     build: database/
+    restart: always
