@@ -14,7 +14,7 @@ docker run --name phabricator-database imageleaf/phabricator-mysql
 
 Run phabricator:
 ```
-docker run -p 8081:80 --link phabricator-database:database imageleaf/phabricator 
+docker run -p 8081:80 --link phabricator-database:database imageleaf/phabricator
 ```
 
 Go to `http://localhost:8081`

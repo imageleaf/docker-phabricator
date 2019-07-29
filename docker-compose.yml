@@ -12,7 +12,6 @@ services:
       - phab-repo:/var/repo
       - phab-log:/var/log
       - phab-storage:/opt/phabricator/storage
-      - ./data/support/preamble.php:/opt/phabricator/support/preamble.php
     restart: always
   database:
     image: imageleaf/phabricator-mysql:stable
