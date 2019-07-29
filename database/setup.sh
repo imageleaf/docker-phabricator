@@ -9,6 +9,7 @@ set -o pipefail
 echo "init mysql admin user"
 mysql_install_db
 mysqld_safe &
+MYSQLD_PID=$!
 # TODO: replace sleep with polling
 sleep 10s
 
@@ -18,4 +19,4 @@ cat /opt/phabricator/resources/sql/quickstart.sql | mysql
 # TODO: create a default admin account
 # TODO: address setup issues described in /config/issue/
 
-pkill -f mysqld
+kill ${MYSQLD_PID}

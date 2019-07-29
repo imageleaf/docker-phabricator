@@ -14,19 +14,18 @@ RUN apt-get clean \
         git \
         apache2 \
         curl \
-        libapache2-mod-php5 \
-        libmysqlclient18 \
+        libapache2-mod-php7.3 \
+        default-libmysqlclient-dev \
         mercurial \
-        mysql-client \
-        php-apc \
-        php5 \
-        php5-apcu \
-        php5-cli \
-        php5-curl \
-        php5-gd \
-        php5-json \
-        php5-ldap \
-        php5-mysqlnd \
+        default-mysql-client \
+        php7.3 \
+        php-apcu \
+        php7.3-cli \
+        php7.3-curl \
+        php7.3-gd \
+        php7.3-json \
+        php7.3-ldap \
+        php7.3-mysqlnd \
         python-pygments \
         sendmail \
         subversion \
@@ -64,7 +63,11 @@ RUN sed -e 's/post_max_size =.*/post_max_size = 64M/' \
           -e 's/;always_populate_raw_post_data =.*/always_populate_raw_post_data = -1/' \
           -e "s/;date.timezone =.*/date.timezone = ${TIMEZONE}/" \
           -e 's/;mysqli.allow_local_infile =.*/mysqli.allow_local_infile = 0/' \
-          -i /etc/php5/apache2/php.ini
+          -i /etc/php/7.3/apache2/php.ini
+RUN sed -e 's/;opcache.validate_timestamps=.*/opcache.validate_timestamps=0/' \
+          -e "s/;date.timezone =.*/date.timezone = ${TIMEZONE}/" \
+          -e 's/;mysqli.allow_local_infile =.*/mysqli.allow_local_infile = 0/' \
+          -i /etc/php/7.3/cli/php.ini
 RUN ln -sT /usr/lib/git-core/git-http-backend /opt/phabricator/support/bin/git-http-backend
 RUN /opt/phabricator/bin/config set phd.user "root"
 RUN echo "www-data ALL=(ALL) SETENV: NOPASSWD: /opt/phabricator/support/bin/git-http-backend" >> /etc/sudoers
