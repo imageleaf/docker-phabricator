@@ -2,7 +2,7 @@
 
 A docker composition for Phabricator:
 
-- One container used by mysql, see https://github.com/imageleaf/docker-phabricator/tree/master/database
+- One container used by mysql, see [database](https://github.com/imageleaf/docker-phabricator/tree/master/database)
 - One container used by apache (phabricator)
 
 ## Run with image from hub.docker.com
@@ -29,4 +29,4 @@ Go to `http://localhost:8081`
 
 ## Credit
 
-Based on the great work by Yvonnick Esnault: https://github.com/yesnault/docker-phabricator
+Based on the great work by Yvonnick Esnault: [yesnault/docker-phabricator](https://github.com/yesnault/docker-phabricator)
