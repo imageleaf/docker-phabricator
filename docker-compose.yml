@@ -1,23 +1,28 @@
-version: '2'
-#
-# Optional Volumes:
-#  - /opt/phabricator/conf - configuration
-#  - /var/repo - code repos
-#  - /var/log - system logs
-#
-#
+version: '3.7'
+
 services:
   phabricator:
-    build: .
-    links:
+    image: imageleaf/phabricator:stable
+    depends_on:
       - database
     ports:
       - '127.0.0.1:8081:80'
     volumes:
-      - ./data/conf:/opt/phabricator/conf
-      - ./data/repo:/var/repo
-      - ./data/log:/var/log
+      - phab-conf:/opt/phabricator/conf
+      - phab-repo:/var/repo
+      - phab-log:/var/log
+      - phab-storage:/opt/phabricator/storage
+      - ./data/support/preamble.php:/opt/phabricator/support/preamble.php
     restart: always
   database:
-    build: database/
+    image: imageleaf/phabricator-mysql:stable
+    volumes:
+      - mysql-data:/var/lib/mysql
     restart: always
+
+volumes:
+  phab-conf: {}
+  phab-repo: {}
+  phab-log: {}
+  phab-storage: {}
+  mysql-data: {}
