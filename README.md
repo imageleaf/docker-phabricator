@@ -1,45 +1,32 @@
-docker-phabricator
-==================
-A docker composition for Phabricator :
-- One container used by mysql, see https://github.com/yesnault/docker-phabricator/tree/master/database
+# docker-phabricator
+
+A docker composition for Phabricator:
+
+- One container used by mysql, see https://github.com/imageleaf/docker-phabricator/tree/master/database
 - One container used by apache (phabricator)
 
-Run with image from hub.docker.com
-----
-Run a mysql container :
+## Run with image from hub.docker.com
+
+Run mysql:
 ```
-docker run --name databasePhabricator yesnault/docker-phabricator-mysql
-```
-
-Run phabricator :
-```
-docker run -p 8081:80 --link databasePhabricator:database yesnault/docker-phabricator 
-```
-Go to http://localhost:8081
-
-Running on OSX
--------
-
-Requires
-
-  * boot2docker
-
-  * docker
-
-From a terminal, execute:
-
-```
-docker-compose up
+docker run --name phabricator-database imageleaf/phabricator-mysql
 ```
 
-and then execute
+Run phabricator:
+```
+docker run -p 8081:80 --link phabricator-database:database imageleaf/phabricator 
+```
+
+Go to `http://localhost:8081`
+
+## Run using docker-compose
 
 ```
-boot2docker ip
+docker-compose up -d
 ```
 
-Then open up a browser and navigate to
+Go to `http://localhost:8081`
 
-```
-http://{boot2docker ip}:8081
-```
+## Credit
+
+Based on the great work by Yvonnick Esnault: https://github.com/yesnault/docker-phabricator
