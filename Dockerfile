@@ -26,6 +26,7 @@ RUN apt-get clean \
         php7.3-json \
         php7.3-ldap \
         php7.3-mysqlnd \
+        php7.3-mbstring \
         python-pygments \
         sendmail \
         subversion \
@@ -56,6 +57,7 @@ RUN ln -s /etc/apache2/sites-available/phabricator.conf /etc/apache2/sites-enabl
 # Setup phabricator
 ARG TIMEZONE=UTC
 RUN mkdir -p /opt/phabricator/conf/local /var/repo
+COPY preamble.php /opt/phabricator/support/preamble.php
 COPY local.json /opt/phabricator/conf/local/local.json
 RUN sed -e 's/post_max_size =.*/post_max_size = 64M/' \
           -e 's/upload_max_filesize =.*/upload_max_filesize = 64M/' \

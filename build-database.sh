@@ -38,22 +38,16 @@ fi
 
 echo "Variables:"
 echo "PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT}"
-echo "ARCANIST_COMMIT=${ARCANIST_COMMIT}"
-echo "LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT}"
 
-echo "Got it, building docker images"
+echo "Got it, building database docker images"
 
-docker build \
-    --build-arg PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT} \
-    --build-arg ARCANIST_COMMIT=${ARCANIST_COMMIT} \
-    --build-arg LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT} \
-    -t "imageleaf/phabricator:${REFSPEC}" .
+(cd database && docker build --build-arg PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT} -t "imageleaf/phabricator-mysql:${REFSPEC}" .)
 
 if [[ "$VERSION" != "dev" ]]; then
-    docker tag "imageleaf/phabricator:${REFSPEC}" "imageleaf/phabricator:${VERSION}"
-    docker tag "imageleaf/phabricator:${REFSPEC}" "imageleaf/phabricator:latest"
+    docker tag "imageleaf/phabricator-mysql:${REFSPEC}" "imageleaf/phabricator-mysql:${VERSION}"
+    docker tag "imageleaf/phabricator-mysql:${REFSPEC}" "imageleaf/phabricator-mysql:latest"
 
-    docker push "imageleaf/phabricator:${REFSPEC}"
-    docker push "imageleaf/phabricator:${VERSION}"
-    docker push "imageleaf/phabricator:latest"
+    docker push "imageleaf/phabricator-mysql:${REFSPEC}"
+    docker push "imageleaf/phabricator-mysql:${VERSION}"
+    docker push "imageleaf/phabricator-mysql:latest"
 fi
