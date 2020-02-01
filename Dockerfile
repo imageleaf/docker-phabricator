@@ -44,7 +44,7 @@ ARG PHABRICATOR_COMMIT
 ARG ARCANIST_COMMIT
 ARG LIBPHUTIL_COMMIT
 
-WORKDIR /opt/phabricator
+WORKDIR /opt
 RUN bash download.sh phabricator $PHABRICATOR_COMMIT
 RUN bash download.sh arcanist $ARCANIST_COMMIT
 RUN bash download.sh libphutil $LIBPHUTIL_COMMIT
@@ -74,6 +74,8 @@ RUN sed -e 's/;opcache.validate_timestamps=.*/opcache.validate_timestamps=0/' \
 RUN ln -sT /usr/lib/git-core/git-http-backend /opt/phabricator/support/bin/git-http-backend
 RUN /opt/phabricator/bin/config set phd.user "root"
 RUN echo "www-data ALL=(ALL) SETENV: NOPASSWD: /opt/phabricator/support/bin/git-http-backend" >> /etc/sudoers
+
+WORKDIR /opt/phabricator
 
 VOLUME ["/opt/phabricator/conf", "/var/repo", "/var/log"]
 
