@@ -1,11 +1,14 @@
+services:
+  - docker:dind
+
 docker-build-master:
   # Official docker image.
-  image: docker:dind
+  image: docker:latest
   stage: build
   variables:
+    DOCKER_HOST: tcp://docker:2375
     OWNER: phacility
     REFSPEC: stable
-    CI_REGISTRY_IMAGE: ${CI_REGISTRY}/imageleaf/phabricator
   services:
     - docker:dind
   before_script:
@@ -29,12 +32,12 @@ docker-build-master:
 
 docker-build:
   # Official docker image.
-  image: docker:dind
+  image: docker:latest
   stage: build
   variables:
+    DOCKER_HOST: tcp://docker:2375
     OWNER: phacility
     REFSPEC: stable
-    CI_REGISTRY_IMAGE: ${CI_REGISTRY}/imageleaf/phabricator
   services:
     - docker:dind
   before_script:
