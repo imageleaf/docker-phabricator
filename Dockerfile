@@ -27,6 +27,7 @@ RUN apt-get clean \
         php7.3-ldap \
         php7.3-mysqlnd \
         php7.3-mbstring \
+        php7.3-zip \
         python-pygments \
         sendmail \
         subversion \
@@ -43,7 +44,7 @@ ARG PHABRICATOR_COMMIT
 ARG ARCANIST_COMMIT
 ARG LIBPHUTIL_COMMIT
 
-WORKDIR /opt
+WORKDIR /opt/phabricator
 RUN bash download.sh phabricator $PHABRICATOR_COMMIT
 RUN bash download.sh arcanist $ARCANIST_COMMIT
 RUN bash download.sh libphutil $LIBPHUTIL_COMMIT

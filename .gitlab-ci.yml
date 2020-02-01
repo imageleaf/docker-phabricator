@@ -1,0 +1,61 @@
+docker-build-master:
+  # Official docker image.
+  image: docker:latest
+  stage: build
+  variables:
+    OWNER: phacility
+    REFSPEC: stable
+    CI_REGISTRY_IMAGE: ${CI_REGISTRY}/imageleaf/phabricator
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" ${CI_REGISTRY}
+    - 'export PHABRICATOR_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/phabricator/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'export ARCANIST_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/arcanist/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'export LIBPHUTIL_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/libphutil/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'echo "PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT}"'
+    - 'echo "ARCANIST_COMMIT=${ARCANIST_COMMIT}"'
+    - 'echo "LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT}"'
+  script:
+    - |
+      docker build --pull \
+        --build-arg PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT} \
+        --build-arg ARCANIST_COMMIT=${ARCANIST_COMMIT} \
+        --build-arg LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT} \
+        -t "${CI_REGISTRY_IMAGE}:master" .
+    - docker push "${CI_REGISTRY_IMAGE}:master"
+  only:
+    - master
+
+docker-build:
+  # Official docker image.
+  image: docker:latest
+  stage: build
+  variables:
+    OWNER: phacility
+    REFSPEC: stable
+    CI_REGISTRY_IMAGE: ${CI_REGISTRY}/imageleaf/phabricator
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" ${CI_REGISTRY}
+    - 'export PHABRICATOR_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/phabricator/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'export ARCANIST_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/arcanist/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'export LIBPHUTIL_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/libphutil/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'echo "PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT}"'
+    - 'echo "ARCANIST_COMMIT=${ARCANIST_COMMIT}"'
+    - 'echo "LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT}"'
+  script:
+    - |
+      docker build --pull \
+        --build-arg PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT} \
+        --build-arg ARCANIST_COMMIT=${ARCANIST_COMMIT} \
+        --build-arg LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT} \
+        -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" -t "${CI_REGISTRY_IMAGE}:latest" .
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+    - docker push "${CI_REGISTRY_IMAGE}:latest"
+  only:
+    - tags
+    - /^v\d+\.\d+\.\d+/
+  except:
+    - master
