@@ -61,11 +61,13 @@ docker-build:
         --build-arg PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT} \
         --build-arg ARCANIST_COMMIT=${ARCANIST_COMMIT} \
         --build-arg LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT} \
-        -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" -t "${CI_REGISTRY_IMAGE}:latest" \
-        -t "${CI_PROJECT_PATH}:${CI_COMMIT_TAG}" -t "${CI_PROJECT_PATH}:latest" .
+        -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" -t "${CI_REGISTRY_IMAGE}:stable" -t "${CI_REGISTRY_IMAGE}:latest" \
+        -t "${CI_PROJECT_PATH}:${CI_COMMIT_TAG}" -t "${CI_PROJECT_PATH}:stable" -t "${CI_PROJECT_PATH}:latest" .
     - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+    - docker push "${CI_REGISTRY_IMAGE}:stable"
     - docker push "${CI_REGISTRY_IMAGE}:latest"
     - docker push "${CI_PROJECT_PATH}:${CI_COMMIT_TAG}"
+    - docker push "${CI_PROJECT_PATH}:stable"
     - docker push "${CI_PROJECT_PATH}:latest"
   only:
     - tags
