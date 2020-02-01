@@ -1,9 +1,9 @@
-# docker-phabricator
+# phabricator
 
 A docker composition for Phabricator:
 
-- One container used by mysql, see [database](https://github.com/imageleaf/docker-phabricator/tree/master/database)
-- One container used by apache (phabricator)
+- One container used by apache [phabricator](https://github.com/imageleaf/phabricator)
+- One container used by mysql, see [phabricator-mysql](https://github.com/imageleaf/phabricator-mysql)
 
 ## Run with image from hub.docker.com
 
