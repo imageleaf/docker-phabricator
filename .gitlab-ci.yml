@@ -71,7 +71,44 @@ docker-build:
     - docker push "${CI_PROJECT_PATH}:latest"
   only:
     - tags
-    - schedules
     - /^v\d+\.\d+\.\d+/
   except:
     - master
+
+docker-schedule:
+  # Monthly docker image
+    image: docker:latest
+  stage: build
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_TLS_CERTDIR: ""
+    OWNER: phacility
+    REFSPEC: stable
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "${DOCKER_HUB_USER}" -p "${DOCKER_HUB_PASS}"
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" ${CI_REGISTRY}
+    - apk add curl
+    - 'export PHABRICATOR_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/phabricator/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'export ARCANIST_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/arcanist/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'export LIBPHUTIL_COMMIT=$(curl -s "https://api.github.com/repos/${OWNER}/libphutil/commits/${REFSPEC}" --header "Accept: application/vnd.github.v3.sha")'
+    - 'echo "PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT}"'
+    - 'echo "ARCANIST_COMMIT=${ARCANIST_COMMIT}"'
+    - 'echo "LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT}"'
+  script:
+    - |
+      docker build --pull \
+        --build-arg PHABRICATOR_COMMIT=${PHABRICATOR_COMMIT} \
+        --build-arg ARCANIST_COMMIT=${ARCANIST_COMMIT} \
+        --build-arg LIBPHUTIL_COMMIT=${LIBPHUTIL_COMMIT} \
+        -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" -t "${CI_REGISTRY_IMAGE}:stable" -t "${CI_REGISTRY_IMAGE}:latest" \
+        -t "${CI_PROJECT_PATH}:${CI_COMMIT_TAG}" -t "${CI_PROJECT_PATH}:stable" -t "${CI_PROJECT_PATH}:latest" .
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+    - docker push "${CI_REGISTRY_IMAGE}:stable"
+    - docker push "${CI_REGISTRY_IMAGE}:latest"
+    - docker push "${CI_PROJECT_PATH}:${CI_COMMIT_TAG}"
+    - docker push "${CI_PROJECT_PATH}:stable"
+    - docker push "${CI_PROJECT_PATH}:latest"
+  only:
+    - schedules
